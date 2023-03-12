@@ -9,7 +9,8 @@ const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 600;
 const int GROUND_Y = -0.5f;
 const float MAP_VELOCITY = -0.01f;
-const int FIREBALL_SIZE = 0.01f;
+const int FIREBALL_SIZE = 0.1f;
+const float FIREBALL_SPEED = -0.01f;
 float HOLE_WIDTH = 0.2f;
 float viewportX = 1.0f;
 
@@ -25,20 +26,53 @@ public:
 
 class Fireball {
 public:
-    Fireball(float x_, float y_, float speed_) :
-        x(x_), y(y_), speed(speed_)
+    Fireball(float x, float y, float speed) :
+        x_(x), y_(y), speed_(speed), createdTime_(clock())
     {}
-
+    
     void move(float dt) {
-        x -= speed * dt;
-        if (x < -SCREEN_WIDTH) {
-            x = INITIAL_X;
+        x_ += speed_ * dt;
+
+        // 일정 시간 이후에 삭제
+        if ((clock() - createdTime_) / CLOCKS_PER_SEC > 5) {
+            //isDeleted_ = true;
         }
     }
+
+    void draw() const {
+        glPushMatrix();
+        glTranslatef(x_, y_, 0);
+
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glBegin(GL_QUADS);
+        glVertex2f(-FIREBALL_SIZE / 2, -FIREBALL_SIZE / 2);
+        glVertex2f(FIREBALL_SIZE / 2, -FIREBALL_SIZE / 2);
+        glVertex2f(FIREBALL_SIZE / 2, FIREBALL_SIZE / 2);
+        glVertex2f(-FIREBALL_SIZE / 2, FIREBALL_SIZE / 2);
+        glEnd();
+
+        glPopMatrix();
+    }
+
+    float getX() const {
+        return x_;
+    }
+
+    float getY() const {
+        return y_;
+    }
+
+    bool getIsDeleted() const {
+        return isDeleted_;
+    }
+
+
 private:
-    float x;
-    float y;
-    float speed;
+    float x_;
+    float y_;
+    float speed_;
+    clock_t createdTime_;
+    bool isDeleted_ = false;
 };
 
 class Character {
@@ -82,12 +116,13 @@ void drawStar()
 
     glPopMatrix();
 }
-void drawFireball()
+/*
+void drawFireball(Fireball fireball)
 {
     glPushMatrix();
     glPopMatrix();
-
 }
+*/
 void drawTerrain()
 {
     glPushMatrix();
@@ -146,14 +181,30 @@ void jump()
     jumpSpeed = 0.03f;
 }
 
+// 장애물 생성 주기(초)
+const float FIREBALL_CREATION_INTERVAL = 2.0f;
 
+// 장애물 리스트
+std::vector<Fireball> fireballs;
+
+// 마지막으로 장애물이 생성된 시간
+clock_t lastFireballCreateTime_ = 0;
+
+void createFireball() {
+    // 장애물 생성 위치
+    float x = 0.0f;
+    float y = -0.5f;
+
+    Fireball fireball(x, y, FIREBALL_SPEED);
+    fireballs.push_back(fireball);
+}
 
 
 
 // 게임 로직
 void update(int value)
 {
-
+    
     viewportX += MAP_VELOCITY;
     if (viewportX < -1.5f)
     {
@@ -176,6 +227,16 @@ void update(int value)
     }
 
     // 맵의 다른 요소들 업데이트 (fireball, stars 등)
+    for (auto& fireball : fireballs) {
+        fireball.move(1.0f);
+    }
+
+    fireballs.erase(std::remove_if(fireballs.begin(), fireballs.end(), [](const Fireball& f) {
+        return f.getIsDeleted();
+        }), fireballs.end());
+
+
+
 
     // 게임 종료 조건 확인
 
@@ -216,7 +277,9 @@ void display(void) {
     drawCharacter(character);
 
     // 맵 그리기 (terrain, fireball, stars)
-    drawFireball();
+    for (const auto& fireball : fireballs) {
+        fireball.draw();
+    }
     drawTerrain();
     drawStar();
     drawHole(viewportX);
