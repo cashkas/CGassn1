@@ -156,21 +156,142 @@ void drawHole(float viewPort)
 	glPopMatrix();
 }
 
-void drawCharacter(Character character)
+void drawCharacter(Character character, int frame)
 {
+   //¸Ó¸®
 	glPushMatrix();
-
-	glTranslatef(character.x, character.y, 0);
-	glColor3f(1, 0, 1); // Ä³¸¯ÅÍ »ö»ó
-
-	glBegin(GL_QUADS); // Ä³¸¯ÅÍ ±×¸®±â
-	glVertex2f(0, 0);
-	glVertex2f(character.width, 0);
-	glVertex2f(character.width, character.height);
-	glVertex2f(0, character.height);
-	glEnd();
-
+	glTranslatef(character.x, character.y + 0.3f, 0.0f);
+	glColor3f(1, 0, 1);
+	glScalef(0.5f, 0.6f, 0.0f);
+	glutSolidCube(character.width);
 	glPopMatrix();
+
+	//¸ñ
+	glPushMatrix();
+	glTranslatef(character.x - 0.01f, character.y + 0.25f, 0.0f);
+	glColor3f(1, 0, 1);
+	glScalef(0.25f, 0.5f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+
+	//ÆÈ
+	float upperarmAngles[4] = { -30.0f, 0.0f, 30.0f, 0.0f };
+	float l_lowerarmAngles[4] = { 15.0f, 0.0f, 30.0f, 0.0f };
+	float r_lowerarmAngles[4] = { 45.0f, 0.0f, 15.0f, 0.0f };
+	
+	//¿ÞÆÈ
+	//upper
+	glPushMatrix();
+	glTranslatef(character.x, character.y + 0.2f, 0.0f);
+	glColor3f(0.9, 0, 1);
+	glRotatef(upperarmAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.001f, 0.0f);
+	glScalef(0.3f, 0.6f, 0.0f);
+	glutSolidCube(character.width);
+
+	//lower
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(l_lowerarmAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.1f, 0.0f);
+	glScalef(1.0f, 1.0f, 0.0f);
+	glutSolidCube(character.width);
+
+	//hand
+	glTranslatef(0.0f, -0.08f, 0.0f);
+	glScalef(0.5f, 0.5f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+
+	//¹ß
+	float upperlegAngles[4] = { 30.0f, 0.0f, -30.0f, 0.0f };
+	float l_lowerlegAngles[4] = { -30.0f, 0.0f, 0.0f, 0.0f };
+	float r_lowerlegAngles[4] = { 0.0f, 0.0f, -30.0f, 0.0f };
+
+	//¿Þ¹ß
+	//upper
+	glPushMatrix();
+	glTranslatef(character.x, character.y + 0.15f, 0.0f);
+	glColor3f(0.9, 0, 1);
+	glRotatef(upperlegAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.05f, 0.0f);
+	glScalef(0.3f, 0.7f, 0.0f);
+	glutSolidCube(character.width);
+
+	//lower
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(l_lowerlegAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.1f, 0.0f);
+	glScalef(0.8f, 1.0f, 0.0f);
+	glutSolidCube(character.width);
+
+	//foot
+	glTranslatef(0.0f, -0.05f, 0.0f);
+	glScalef(1.0f, 0.4f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+
+	//¸ö
+	glPushMatrix();
+	glTranslatef(character.x, character.y + 0.2f, 0.0f);
+	glColor3f(1, 0, 1);
+	glScalef(0.5f, 1.0f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+
+	//°ñÆÇ
+	glPushMatrix();
+	glTranslatef(character.x, character.y + 0.15f, 0.0f);
+	glColor3f(1, 0, 1);
+	glScalef(0.45f, 0.5f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+	
+	//¿À¸¥ÆÈ
+	//upper
+	glPushMatrix();
+	glTranslatef(character.x, character.y + 0.2f, 0.0f);
+	glColor3f(0.9, 0, 1);
+	glRotatef(-upperarmAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.001f, 0.0f);
+	glScalef(0.3f, 0.6f, 0.0f);
+	glutSolidCube(character.width);
+
+	//lower
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(r_lowerarmAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.1f, 0.0f);
+	glScalef(1.0f, 1.0f, 0.0f);
+	glutSolidCube(character.width);
+
+	//hand
+	glTranslatef(0.0f, -0.08f, 0.0f);
+	glScalef(0.5f, 0.5f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+	
+	//¿À¸¥¹ß
+	//upper
+	glPushMatrix();
+	glTranslatef(character.x, character.y + 0.15f, 0.0f);
+	glColor3f(0.9, 0, 1);
+	glRotatef(-upperlegAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.05f, 0.0f);
+	glScalef(0.3f, 0.7f, 0.0f);
+	glutSolidCube(character.width);
+
+	//lower
+	glTranslatef(0.0f, 0.0f, 0.0f);
+	glRotatef(r_lowerlegAngles[frame], 0.0f, 0.0f, 1.0f);
+	glTranslatef(0.0f, -0.1f, 0.0f);
+	glScalef(0.8f, 1.0f, 0.0f);
+	glutSolidCube(character.width);
+
+	//foot
+	glTranslatef(0.0f, -0.05f, 0.0f);
+	glScalef(1.0f, 0.4f, 0.0f);
+	glutSolidCube(character.width);
+	glPopMatrix();
+	
 }
 
 void drawScore()
@@ -343,7 +464,7 @@ void update(int value)
 		drawStar(*it, viewportX);
 		checkStarCollision(character, *it);
 	}
-	checkGameOver();
+	//checkGameOver();
 
 	glutTimerFunc(16, update, 0); // ~60fps
 	glutPostRedisplay();
@@ -387,7 +508,10 @@ void display(void) {
 
 	drawHole(viewportX);
 	// Ä³¸¯ÅÍ ±×¸®±â
-	drawCharacter(character);
+
+	static int frame = 0;
+	drawCharacter(character, frame);
+	frame = (frame + 4) % 4;
 
 	drawStars();
 
@@ -412,7 +536,6 @@ void display(void) {
 	if (gameOver)
 		hasGameOver = true;
 }
-
 
 
 
